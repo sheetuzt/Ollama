@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>My ChatGPT</title>
+<style>
+body { background:#0f0f0f; color:#fff; font-family:Arial }
+#chat { max-width:800px; margin:auto; padding:20px }
+.msg { padding:10px; margin:10px 0; border-radius:6px }
+.user { background:#2563eb; text-align:right }
+.bot { background:#1f2937 }
+input { width:75%; padding:10px }
+button { padding:10px }
+</style>
+</head>
+<body>
+
+<div id="chat"></div>
+
+<div style="text-align:center">
+<input id="q" placeholder="Type your message..." />
+<button onclick="send()">Send</button>
+</div>
+
+<script>
+async function send() {
+  let q = document.getElementById("q").value;
+  if(!q) return;
+
+  chat.innerHTML += `<div class="msg user">${q}</div>`;
+  document.getElementById("q").value = "";
+
+  let r = await fetch("/api/chat", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      model:"hf.co/DavidAU/Qwen3-The-Xiaolong-Josiefied-Omega-Directive-22B-uncensored-abliterated-GGUF:Q4_K_M",
+      messages:[{ role:"user", content:q }]
+    })
+  });
+
+  let j = await r.json();
+  chat.innerHTML += `<div class="msg bot">${j.message.content}</div>`;
+  window.scrollTo(0,document.body.scrollHeight);
+}
+</script>
+
+</body>
+  </html>
