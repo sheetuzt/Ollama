@@ -7,7 +7,7 @@ ENV OLLAMA_NUM_GPU=1
 ENV OLLAMA_KEEP_ALIVE=10m
 
 RUN apt update && apt install -y \
-    curl ca-certificates netcat python3 \
+    curl ca-certificates netcat python3 python3-requests \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Ollama
@@ -15,16 +15,13 @@ RUN curl -fsSL https://ollama.com/install.sh | sh
 
 WORKDIR /app
 COPY index.html .
+COPY app.py .
 
 EXPOSE 8000
 
 CMD sh -c "\
-echo 'Starting UI first (health check safe)...' && \
-python3 -m http.server 8000 & \
-echo 'Starting Ollama server...' && \
+python3 app.py & \
 ollama serve & \
-echo 'Waiting for Ollama...' && \
 until nc -z localhost 11434; do sleep 1; done && \
-echo 'Pulling model in background...' && \
 ollama pull hf.co/DavidAU/Qwen3-The-Xiaolong-Josiefied-Omega-Directive-22B-uncensored-abliterated-GGUF:Q4_K_M & \
 wait"
