@@ -7,6 +7,5 @@ ENV OLLAMA_KEEP_ALIVE=10m
 
 EXPOSE 11434
 
-CMD ollama serve & \
-    ollama pull hf.co/DavidAU/Qwen3-The-Xiaolong-Josiefied-Omega-Directive-22B-uncensored-abliterated-GGUF:Q4_K_M && \
-    wait
+# IMPORTANT: shell form CMD (not exec form)
+CMD sh -c "ollama serve & ollama pull hf.co/DavidAU/Qwen3-The-Xiaolong-Josiefied-Omega-Directive-22B-uncensored-abliterated-GGUF:Q4_K_M && wait"
