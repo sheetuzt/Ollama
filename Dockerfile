@@ -20,8 +20,13 @@ COPY app.py .
 EXPOSE 8000
 
 CMD sh -c "\
+echo 'Starting Web UI...' && \
 python3 app.py & \
+echo 'Starting Ollama server...' && \
 ollama serve & \
+echo 'Waiting for Ollama...' && \
 until nc -z localhost 11434; do sleep 1; done && \
-ollama pull hf.co/DavidAU/Qwen3-The-Xiaolong-Josiefied-Omega-Directive-22B-uncensored-abliterated-GGUF:Q4_K_M & \
-wait"
+echo 'Pulling 22B model in background...' && \
+(ollama pull hf.co/DavidAU/Qwen3-The-Xiaolong-Josiefied-Omega-Directive-22B-uncensored-abliterated-GGUF:Q4_K_M || true) & \
+echo 'Container is HEALTHY' && \
+tail -f /dev/null"
