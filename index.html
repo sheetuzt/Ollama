@@ -23,6 +23,8 @@ button { padding:10px }
 </div>
 
 <script>
+const chat = document.getElementById("chat");
+
 async function send() {
   let q = document.getElementById("q").value;
   if(!q) return;
@@ -34,16 +36,15 @@ async function send() {
     method:"POST",
     headers:{ "Content-Type":"application/json" },
     body:JSON.stringify({
-      model:"hf.co/DavidAU/Qwen3-The-Xiaolong-Josiefied-Omega-Directive-22B-uncensored-abliterated-GGUF:Q4_K_M",
       messages:[{ role:"user", content:q }]
     })
   });
 
   let j = await r.json();
   chat.innerHTML += `<div class="msg bot">${j.message.content}</div>`;
-  window.scrollTo(0,document.body.scrollHeight);
+  window.scrollTo(0, document.body.scrollHeight);
 }
 </script>
 
 </body>
-  </html>
+</html>
