@@ -13,16 +13,18 @@ RUN apt update && apt install -y \
 # Install Ollama
 RUN curl -fsSL https://ollama.com/install.sh | sh
 
-# Copy UI
 WORKDIR /app
 COPY index.html .
 
-EXPOSE 11434
 EXPOSE 8000
 
 CMD sh -c "\
-ollama serve & \
-until nc -z localhost 11434; do sleep 1; done && \
-ollama pull hf.co/DavidAU/Qwen3-The-Xiaolong-Josiefied-Omega-Directive-22B-uncensored-abliterated-GGUF:Q4_K_M & \
+echo 'Starting UI first (health check safe)...' && \
 python3 -m http.server 8000 & \
+echo 'Starting Ollama server...' && \
+ollama serve & \
+echo 'Waiting for Ollama...' && \
+until nc -z localhost 11434; do sleep 1; done && \
+echo 'Pulling model in background...' && \
+ollama pull hf.co/DavidAU/Qwen3-The-Xiaolong-Josiefied-Omega-Directive-22B-uncensored-abliterated-GGUF:Q4_K_M & \
 wait"
